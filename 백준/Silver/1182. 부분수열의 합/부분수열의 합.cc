@@ -1,48 +1,59 @@
 #include <bits/stdc++.h>
-int n, s;
-int cnt;
-bool isused[22];
-int arr[22];
-int sum;
 
 using namespace std;
 
-void func(int nx,int x)
-{
-	//if (nx == n) return;	//isused로 점점 고려할 수열의 원소 수가 줄어들기 때문에 이 조건에는 어차피 한번밖에 걸리지 않는다 
+#define endl "\n"
+int N, S;
+int Arr[22];
+bool IsUsed[22];
+int Cnt = 0;
+vector<int> V;
 
-	if (sum == s && nx != 0)		
-	{
-		cnt++;
-		//return;	//return 하면 sum과 s 같아졌을때 그 이후 수열을 더하지 않고 return 해버린다
-	}
+void init() {
+	Cnt = 0;
+	cin >> N >> S;
 
-	for (int i = 0 ; i < n; i++)
-	{
-		
-		if (isused[i] || x>i) continue;		// 이미 합을 구했던 부분수열은 고려하지 않음
-
-		isused[i] = true;
-		sum += arr[i];
-		func(nx + 1,i);
-
-		isused[i] = false;
-		sum -= arr[i];
+	for (int i = 0; i < N; i++) {
+		int tmp;
+		cin >> tmp;
+		V.push_back(tmp);
 	}
 }
+vector<int> Vtmp;
+void dfs(int idx, int flag) {
+	if (idx == N) {
+		int sum = 0;
+		if (Vtmp.size() == 0) {
+			return;
+		}
+		for (int i = 0; i < Vtmp.size(); i++) {
+	//		cout << Vtmp[i] << " ";
+			sum += Vtmp[i];
+		}
+	//	cout << endl;
+		if (sum == S) {
+			Cnt++;
+		}
+		return;
+	}
+	if (flag == 1) {
+		Vtmp.push_back(V[idx]);
+	}
+	dfs(idx + 1, 0);
+	if (idx < N-1) {
+		dfs(idx + 1, 1);
+	}
+	if (flag == 1) {
+		Vtmp.pop_back();
+	}
+}
+int main() {
 
-int main(void)
-{
-	ios::sync_with_stdio(0);
-	cin.tie(0);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	init();
+	dfs(-1, 0);
 
-	cin >> n >> s;
-	for (int i = 0 ; i < n; i++)
-		cin >> arr[i];
-
-	func(0,0);
-
-	cout << cnt;
-
+	cout << Cnt << endl;
 	return 0;
 }
